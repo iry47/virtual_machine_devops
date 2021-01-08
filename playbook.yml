@@ -1,0 +1,15 @@
+- hosts: all
+  roles:
+    - base
+
+- hosts: frontend
+  roles:
+    - frontend
+
+- hosts: backend
+  roles:
+    - backend
+
+- hosts: database
+  roles:
+    - database
