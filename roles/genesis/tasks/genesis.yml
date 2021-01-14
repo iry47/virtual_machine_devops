@@ -1,0 +1,14 @@
+- name: Detect template VM exists
+  command:
+    chdir={{ playbook_dir }}/build/vm ls output-T-NSA_template
+  register: result
+  ignore_errors: true
+
+- name: Build temporary template VM
+  command:
+    chdir={{ playbook_dir }}/build/vm/ packer build debian.json
+  when: result is failed
+
+- name: VM DB genesis
+  include_tasks: clone.yml
+  with_indexed_items: "{{ groups[outer_item] }}"

@@ -1,0 +1,9 @@
+- name: Configure genesis
+  include_tasks: configure.yml
+
+- name: Genesis
+  include_tasks: genesis.yml
+  with_items: "{{ groups.keys() }}"
+  loop_control:
+    loop_var: outer_item
+  when: outer_item != "all" and outer_item != "ungrouped"

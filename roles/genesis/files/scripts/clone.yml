@@ -1,0 +1,12 @@
+- name: "Setup.yml"
+  hosts: localhost
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Set static ip
+      lineinfile:
+        path: /etc/network/interfaces
+        regexp: "^iface ens33"
+        line: "iface ens33 inet static\n\taddress {{ lookup('env', 'VM_HOST') }}\n\tgateway {{ lookup('env', 'VM_GATEWAY') }}\n"
+        state: present
+
