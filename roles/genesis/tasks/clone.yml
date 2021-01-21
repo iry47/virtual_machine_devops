@@ -6,7 +6,7 @@
 
 - name: "Genesis {{ item.1 }}"
   command:
-    chdir={{ playbook_dir }}/build/vm/ packer \
+    chdir={{ playbook_dir }}/build/vm/ ./packer \
       build \
       -var "vm_name={{ item.1 }}" \
       -var "vm_host={{ hostvars[groups[outer_item][item.0]].vm_ip }}" \

@@ -6,7 +6,7 @@
 
 - name: Build temporary template VM
   command:
-    chdir={{ playbook_dir }}/build/vm/ packer build debian.json
+    chdir={{ playbook_dir }}/build/vm/ ./packer build debian.json
   when: result is failed
 
 - name: VM DB genesis
