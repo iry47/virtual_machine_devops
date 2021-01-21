@@ -1,0 +1,35 @@
+- name: Ensure unzip is installed.
+  package: name=unzip state=present
+
+- name: Create VM directory
+  file:
+    path: "{{ playbook_dir }}/build/vm"
+    state: directory
+
+- name: Download and unarchive Packer.
+  unarchive:
+    src: https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_{{ packer_arch }}.zip
+    dest: "{{ playbook_dir }}/build/vm"
+    remote_src: true
+    creates: "{{ playbook_dir }}/build/vm/packer"
+    mode: 0755
+
+- name: Copy Debian preseed scripts
+  copy:
+    src=http/
+    dest={{ playbook_dir }}/build/vm/http
+
+- name: Copy VM post-install scripts
+  copy:
+    src=scripts/
+    dest={{ playbook_dir }}/build/vm/scripts
+
+- name: Copy VM genesis file
+  copy:
+    src=debian.json
+    dest={{ playbook_dir }}/build/vm/debian.json
+
+- name: Copy VM clone file
+  copy:
+    src=debian-clones.json
+    dest={{ playbook_dir }}/build/vm/debian-clones.json

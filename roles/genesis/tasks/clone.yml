@@ -1,0 +1,26 @@
+- name: Detect db VM exists
+  command:
+    chdir={{ playbook_dir }}/build/vm ls output-{{ item.1 }}
+  register: result
+  ignore_errors: true
+
+- name: "Genesis {{ item.1 }}"
+  command:
+    chdir={{ playbook_dir }}/build/vm/ ./packer \
+      build \
+      -var "vm_name={{ item.1 }}" \
+      -var "vm_host={{ hostvars[groups[outer_item][item.0]].vm_ip }}" \
+      -var "vm_gateway={{ hostvars[groups[outer_item][item.0]].vm_gateway }}" \
+      -var "ssh_key={{ ssh_key }}" \
+      debian-clones.json
+  when: result is failed
+
+- name: "Wake {{ item.1 }}"
+  command:
+    chdir={{ playbook_dir }}/build/vm vmrun start output-{{ item.1 }}/{{ item.1 }}.vmx
+
+- name: "Wait for {{ item.1 }}"
+  wait_for:
+    port: 22
+    host: "{{ hostvars[groups[outer_item][item.0]].vm_ip }}"
+  delegate_to: localhost

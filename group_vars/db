@@ -1,0 +1,12 @@
+mysqlservice: mysqld
+dbuser: test
+dbname: test
+upassword: test
+
+mysql_service: mysqld
+mysql_port: 3306
+mysql_user: test
+mysql_password: test
+mysql_db: test
+mysql_socket: /var/run/mysqld/mysqld.sock
+

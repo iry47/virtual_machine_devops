@@ -1,0 +1,46 @@
+- name: Install packages
+  apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: latest
+
+- name: Create PID directory
+  file:
+    path=/var/run/mysqld
+    state=directory
+    owner=mysql
+    group=mysql
+    mode=0775
+
+- name: Bind address
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+    backrefs: yes
+
+- name: Start service
+  service:
+    name=mariadb
+    state=started
+    enabled=yes
+
+- name: Create database
+  mysql_db:
+    name={{ mysql_db }}
+    state=present
+    login_unix_socket={{ mysql_socket }}
+
+- name: Create user
+  mysql_user:
+    name={{ mysql_user }}
+    password={{ mysql_password }}
+    priv=*.*:ALL host='%' state=present
+    login_unix_socket={{ mysql_socket }}
+
+- name: Restart service
+  service:
+    name=mariadb
+    state=restarted
+

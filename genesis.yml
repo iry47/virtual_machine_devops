@@ -1,0 +1,13 @@
+- name: Virtual machines genesis
+  hosts: localhost
+  connection: local
+
+  roles:
+    - genesis
+
+#- name: Data base configuration
+#  hosts: db
+#  remote_user: root
+#
+#  roles:
+#    db
