@@ -2,7 +2,7 @@
   "variables": {
     "vm_name": "",
     "vm_host": "",
-    "numvcpus": "1",
+    "numvcpus": "2",
     "memsize": "2048",
     "disk_size": "20960",
     "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.7.0-amd64-netinst.iso",

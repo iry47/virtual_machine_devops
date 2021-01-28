@@ -46,6 +46,14 @@
   poll: 5
   when: not gitlab_file.stat.exists
 
+- name: Copy GitLab configuration file.
+  copy:
+    src: "{{ gitlab_config_template }}"
+    dest: /etc/gitlab/gitlab.rb
+    owner: root
+    group: root
+    mode: 0600
+
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
 - name: Reconfigure GitLab (first run).
@@ -70,11 +78,14 @@
     creates={{ gitlab_ssl_certificate }}
   when: gitlab_create_self_signed_cert
 
-- name: Copy GitLab configuration file.
+- name: Copy authentication scripts
+  delegate_to: localhost
   copy:
-    src: "{{ gitlab_config_template }}"
-    dest: /etc/gitlab/gitlab.rb
-    owner: root
-    group: root
-    mode: 0600
-  notify: restart gitlab
+    src=scripts/
+    dest={{ playbook_dir }}/{{ build_directory }}/scripts
+
+- name: Save access token
+  delegate_to: localhost
+  command: chdir={{ playbook_dir }}/{{ build_directory }}/scripts python3 gitlab_token.py token 2022-01-01 > access_token
+
+
