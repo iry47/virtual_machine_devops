@@ -1,0 +1,14 @@
+- name: Install dependencies
+  apt:
+    name:
+      - nodejs
+      - npm
+      - unzip
+      - git
+    state: latest
+
+- name: Copy sources
+  ansible.builtin.unarchive:
+    src: frontend.zip
+    dest: "{{ sources_directory }}"
+

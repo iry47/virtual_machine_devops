@@ -18,3 +18,10 @@
 
   roles:
     - gitlab
+
+- name: Frontend configuration
+  hosts: frontend
+  remote_user: root
+
+  roles:
+    - frontend
