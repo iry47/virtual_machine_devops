@@ -6,6 +6,8 @@ gitlab_edition: "gitlab-ce"
 gitlab_version: '13.4.4-ce.0'
 gitlab_backup_path: "/var/opt/gitlab/backups"
 gitlab_config_template: "gitlab.rb.j2"
+gitlab_root_password: "testtest"
+gitlab_runners_registration_token: "test123"
 
 # SSL Configuration.
 gitlab_redirect_http_to_https: "true"

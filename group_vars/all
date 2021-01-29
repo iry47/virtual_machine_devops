@@ -8,4 +8,4 @@ packer_bin_path: /usr/local/bin
 
 sources_directory: /opt
 
-build_directory: 'build'
+build_directory: build

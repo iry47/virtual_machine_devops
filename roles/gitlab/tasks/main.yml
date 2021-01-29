@@ -46,13 +46,19 @@
   poll: 5
   when: not gitlab_file.stat.exists
 
-- name: Copy GitLab configuration file.
-  copy:
-    src: "{{ gitlab_config_template }}"
-    dest: /etc/gitlab/gitlab.rb
-    owner: root
-    group: root
-    mode: 0600
+- name: Set admin password
+  lineinfile:
+    path: /etc/gitlab/gitlab.rb
+    regexp: "^# gitlab_rails['initial_root_password']"
+    line: "gitlab_rails['initial_root_password'] = \"{{ gitlab_root_password }}\""
+    state: present
+
+- name: Set runners' shared token
+  lineinfile:
+    path: /etc/gitlab/gitlab.rb
+    regexp: "^# gitlab_rails['initial_shared_runners_registration_token']"
+    line: "gitlab_rails['initial_shared_runners_registration_token'] = \"{{ gitlab_runners_registration_token }}\""
+    state: present
 
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
@@ -60,6 +66,9 @@
   command: >
     gitlab-ctl reconfigure
     creates=/var/opt/gitlab/bootstrapped
+  environment:
+    LC_ALL: "en_US.UTF-8"
+    LC_CTYPE: "en_US.UTF-8"
   failed_when: false
 
 - name: Create GitLab SSL configuration folder.
@@ -78,14 +87,52 @@
     creates={{ gitlab_ssl_certificate }}
   when: gitlab_create_self_signed_cert
 
+- name: Copy GitLab configuration file.
+  copy:
+    src: "{{ gitlab_config_template }}"
+    dest: /etc/gitlab/gitlab.rb
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart gitlab
+
 - name: Copy authentication scripts
   delegate_to: localhost
   copy:
     src=scripts/
     dest={{ playbook_dir }}/{{ build_directory }}/scripts
 
-- name: Save access token
+- name: Get access token
+  command: chdir={{ playbook_dir }}/{{ build_directory }} python3 scripts/gitlab_token.py token 2022-01-01
   delegate_to: localhost
-  command: chdir={{ playbook_dir }}/{{ build_directory }}/scripts python3 gitlab_token.py token 2022-01-01 > access_token
+  register: token
 
+- name: Save access token
+  copy:
+    content: "{{ token.stdout }}"
+    dest: "{{ playbook_dir }}/{{ build_directory }}/gitlab_token.txt"
+  delegate_to: localhost
 
+- name: Create Back repository
+  shell: >
+    curl -X POST -F "path=back" http://192.168.62.45/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
+  delegate_to: localhost
+  register: back_runners_token
+
+- name: Save Back runner token
+  copy:
+    content: "{{ back_runners_token.stdout }}"
+    dest: "{{ playbook_dir }}/{{ build_directory }}/back_runners_token.txt"
+  delegate_to: localhost
+
+- name: Create Front repository
+  shell: >
+    curl -X POST -F "path=front" http://192.168.62.45/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
+  delegate_to: localhost
+  register: front_runners_token
+
+- name: Save Back runner token
+  copy:
+    content: "{{ front_runners_token.stdout }}"
+    dest: "{{ playbook_dir }}/{{ build_directory }}/front_runners_token.txt"
+  delegate_to: localhost
