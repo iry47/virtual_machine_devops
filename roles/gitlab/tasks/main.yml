@@ -131,7 +131,7 @@
   delegate_to: localhost
   register: front_runners_token
 
-- name: Save Back runner token
+- name: Save Front runner token
   copy:
     content: "{{ front_runners_token.stdout }}"
     dest: "{{ playbook_dir }}/{{ build_directory }}/front_runners_token.txt"
