@@ -46,8 +46,6 @@
   poll: 5
   when: not gitlab_file.stat.exists
 
-# Start and configure GitLab. Sometimes the first run fails, but after that,
-# restarts fix problems, so ignore failures on this run.
 - name: Reconfigure GitLab (first run).
   command: >
     gitlab-ctl reconfigure
