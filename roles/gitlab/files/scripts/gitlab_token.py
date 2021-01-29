@@ -3,13 +3,13 @@ import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
-endpoint = "http://192.168.62.45"
+endpoint = sys.argv[4]
 root_route = urljoin(endpoint, "/")
 sign_in_route = urljoin(endpoint, "/users/sign_in")
 pat_route = urljoin(endpoint, "/profile/personal_access_tokens")
 
 login = "root"
-password = "testtest"
+password = sys.argv[3]
 
 
 def find_csrf_token(text):

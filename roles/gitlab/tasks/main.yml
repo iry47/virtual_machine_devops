@@ -103,7 +103,7 @@
     dest={{ playbook_dir }}/{{ build_directory }}/scripts
 
 - name: Get access token
-  command: chdir={{ playbook_dir }}/{{ build_directory }} python3 scripts/gitlab_token.py token 2022-01-01
+  command: chdir={{ playbook_dir }}/{{ build_directory }} python3 scripts/gitlab_token.py token 2022-01-01 {{ gitlab_root_password }} http://{{ hostvars[groups['gitlab'][0]].vm_ip }}
   delegate_to: localhost
   register: token
 
