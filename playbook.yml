@@ -5,23 +5,37 @@
   roles:
     - genesis
 
-- name: Data base configuration
-  hosts: db
-  remote_user: root
+#- name: Data base configuration
+#  hosts: db
+#  remote_user: root
+#
+#  roles:
+#    - db
 
-  roles:
-    - db
+#- name: Gitlab configuration
+#  hosts: gitlab
+#  remote_user: root
+#
+#  roles:
+#    - gitlab
 
-- name: Gitlab configuration
-  hosts: gitlab
-  remote_user: root
+#- name: Frontend configuration
+#  hosts: frontend
+#  remote_user: root
+#
+#  roles:
+#    - front_config
 
-  roles:
-    - gitlab
-
-- name: Frontend configuration
+- name: Frontent test
   hosts: frontend
   remote_user: root
 
   roles:
-    - frontend
+    - front_test
+
+#- name: Frontent build
+#  hosts: frontend
+#  remote_user: root
+#
+#  roles:
+#    - front_build

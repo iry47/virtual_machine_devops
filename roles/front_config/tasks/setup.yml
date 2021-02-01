@@ -1,0 +1,21 @@
+- name: Install dependencies
+  apt:
+    name:
+      - curl
+      - nodejs
+      - npm
+      - unzip
+      - git
+    state: latest
+
+- name: Install Angular
+  shell: npm install -g @angular/cli
+
+- name: Generate SSH key
+  shell: >
+    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+
+- name: Copy sources
+  ansible.builtin.unarchive:
+    src: frontend.zip
+    dest: "{{ sources_directory }}"
