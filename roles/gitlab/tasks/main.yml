@@ -115,7 +115,7 @@
 
 - name: Create Back repository
   shell: >
-    curl -X POST -F "path=back" http://192.168.62.45/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
+    curl -X POST -F "path=back" http://{{ hostvars[groups['gitlab'][0]].vm_ip }}/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
   delegate_to: localhost
   register: back_runners_token
 
@@ -127,7 +127,7 @@
 
 - name: Create Front repository
   shell: >
-    curl -X POST -F "path=front" http://192.168.62.45/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
+    curl -X POST -F "path=front" http://{{ hostvars[groups['gitlab'][0]].vm_ip }}/api/v4/projects\?access_token\={{ token.stdout }} | grep -Po '"runners_token": *\K"[^"]*"' | grep -Po '(?<=")[^"]+(?=")'
   delegate_to: localhost
   register: front_runners_token
 
