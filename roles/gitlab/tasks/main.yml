@@ -56,6 +56,13 @@
 - name: Set runners' shared token
   lineinfile:
     path: /etc/gitlab/gitlab.rb
+    regexp: "^external_url"
+    line: "external_url 'http://192.168.62.45'"
+    state: present
+
+- name: Set external url
+  lineinfile:
+    path: /etc/gitlab/gitlab.rb
     regexp: "^# gitlab_rails['initial_shared_runners_registration_token']"
     line: "gitlab_rails['initial_shared_runners_registration_token'] = \"{{ gitlab_runners_registration_token }}\""
     state: present
@@ -86,15 +93,6 @@
     -days 3650 -keyout {{ gitlab_ssl_certificate_key }} -out {{ gitlab_ssl_certificate }} -extensions v3_ca
     creates={{ gitlab_ssl_certificate }}
   when: gitlab_create_self_signed_cert
-
-- name: Copy GitLab configuration file.
-  copy:
-    src: "{{ gitlab_config_template }}"
-    dest: /etc/gitlab/gitlab.rb
-    owner: root
-    group: root
-    mode: 0600
-  notify: restart gitlab
 
 - name: Copy authentication scripts
   delegate_to: localhost

@@ -1,6 +1,6 @@
 # General config.
-gitlab_domain: gitlab
-gitlab_external_url: "https://{{ gitlab_domain }}/"
+gitlab_domain: 192.168.62.45
+gitlab_external_url: "http://{{ gitlab_domain }}/"
 gitlab_git_data_dir: "/var/opt/gitlab/git-data"
 gitlab_edition: "gitlab-ce"
 gitlab_version: ''
@@ -69,6 +69,6 @@ gitlab_email_reply_to: "gitlab@example.com"
 
 # Registry configuration.
 gitlab_registry_enable: "false"
-gitlab_registry_external_url: "https://gitlab.example.com:4567"
+gitlab_registry_external_url: "http://192.168.62.45:4567"
 gitlab_registry_nginx_ssl_certificate: "/etc/gitlab/ssl/gitlab.crt"
 gitlab_registry_nginx_ssl_certificate_key: "/etc/gitlab/ssl/gitlab.key"

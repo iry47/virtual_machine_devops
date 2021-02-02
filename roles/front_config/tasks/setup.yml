@@ -6,6 +6,7 @@
       - npm
       - unzip
       - git
+      - nginx
     state: latest
 
 - name: Install Angular
@@ -19,3 +20,27 @@
   ansible.builtin.unarchive:
     src: frontend.zip
     dest: "{{ sources_directory }}"
+
+- name: Copy nginx conf file
+  copy:
+    src=front.conf
+    dest=/etc/nginx/conf.d/front.conf
+
+- name: Set gitlab-runner permission to deploy directory
+  shell: chown -R gitlab-runner /var/www
+
+- name: Restart nginx
+  shell: systemctl restart nginx
+
+- name: Copy Gitlab-ci file
+  copy:
+    src=gitlab-ci.yml
+    dest=/opt/front/.gitlab-ci.yml
+
+- name: Copy Ansible playbooks
+  copy:
+    src=playbooks/
+    dest=/opt/playbooks
+
+- name: Add gitlab ssh key
+  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts

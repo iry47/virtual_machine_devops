@@ -18,5 +18,8 @@
 - name: Register gitlab-runner with master
   command: gitlab-runner register --non-interactive --name runner --url http://"{{ hostvars[groups['gitlab'][0]].vm_ip }}" --registration-token "{{ lookup('file','{{ playbook_dir }}/{{ build_directory }}/front_runners_token.txt' ) }}" --executor shell
 
+- name: Set permission to sources directory
+  shell: chown -R gitlab-runner {{ sources_directory }}
+
 - name: Restart runners
   command: gitlab-runner restart
