@@ -1,0 +1,37 @@
+
+- name: Get generated SSH key
+  command: chdir=/root/.ssh cat id_rsa.pub
+  register: ssh_key
+
+- name: Get Gitlab API access token
+  command: chdir={{ playbook_dir }}/{{ build_directory }} cat gitlab_token.txt
+  register: gitlab_token
+  delegate_to: localhost
+
+- name: Add ssh key to Gitlab user
+  shell: >
+    curl -X POST -F "title=ssh_backend_server" -F "key={{ ssh_key.stdout }}" http://{{ hostvars[groups['gitlab'][0]].vm_ip }}/api/v4/user/keys?access_token={{ gitlab_token.stdout }}
+  delegate_to: localhost
+
+- name: config git user
+  shell: git config --global user.name "root" && git config --global user.email "admin@example.com"
+
+- name: Init git repository
+  command: >
+    chdir={{ sources_directory }}/back git init
+
+- name: Add remote origin to gitlab blank repository
+  command: >
+    chdir={{ sources_directory }}/back git remote add origin git@{{ hostvars[groups['gitlab'][0]].vm_ip }}:/root/back.git
+
+- name: Add directory to repository
+  command: >
+    chdir={{ sources_directory }}/back git add .
+
+- name: Commit
+  command: >
+    chdir={{ sources_directory }}/back git commit -m "first push"
+
+- name: Push
+  command: >
+    chdir={{ sources_directory }}/back git push origin HEAD:master

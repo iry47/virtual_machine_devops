@@ -11,13 +11,21 @@
 #
 #  roles:
 #    - db
+#
+#- name: Gitlab configuration
+#  hosts: gitlab
+#  remote_user: root
+#
+#  roles:
+#    - gitlab
 
-- name: Gitlab configuration
-  hosts: gitlab
+- name: Backend configuration
+  hosts: backend
   remote_user: root
+  gather_facts: no
 
   roles:
-    - gitlab
+    - back_config
 
 - name: Frontend configuration
   hosts: frontend

@@ -1,16 +1,30 @@
-- name: Install dependencies
+- name: Update and upgrade apt packages
+  become: true
   apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install dependencies
+  become: true
+  apt:
+    state: latest
     name:
       - curl
-      - nodejs
-      - npm
-      - unzip
-      - git
+      - php
+      - php-cli
+      - php-fpm
+      - php-json
+      - php-common
+      - php-mysql
+      - php-zip
+      - php-gd
+      - php-mbstring
+      - php-curl
+      - php-xml
+      - php-pear
+      - php-bcmath
+      - composer
       - nginx
-    state: latest
-
-- name: Install Angular
-  shell: npm install -g @angular/cli
 
 #- name: Download Google Chrome
 #  shell: wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -24,13 +38,13 @@
 
 - name: Copy sources
   ansible.builtin.unarchive:
-    src: frontend.zip
+    src: backend.zip
     dest: "{{ sources_directory }}"
 
 - name: Copy nginx conf file
   copy:
-    src=front.conf
-    dest=/etc/nginx/conf.d/front.conf
+    src=back.conf
+    dest=/etc/nginx/conf.d/back.conf
 
 - name: Restart nginx
   shell: systemctl restart nginx
@@ -38,7 +52,7 @@
 - name: Copy Gitlab-ci file
   copy:
     src=gitlab-ci.yml
-    dest=/opt/front/.gitlab-ci.yml
+    dest=/opt/back/.gitlab-ci.yml
 
 - name: Copy Ansible playbooks
   copy:
