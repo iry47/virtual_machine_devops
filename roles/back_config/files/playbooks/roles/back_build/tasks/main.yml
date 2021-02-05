@@ -1,8 +1,6 @@
 - name: Install PHP dependencies
   command: chdir={{ sources_directory }}/back composer install --optimize-autoloader --no-dev
 
-- name: Build JS dependencies
-  command: chdir={{ sources_directory }}/back npm install
+- name: Execute migrations
+  command: chdir={{ sources_directory }}/back php artisan migrate
 
-- name: Package JS prod packages
-  command: chdir={{ sources_directory }}/back npm run prod

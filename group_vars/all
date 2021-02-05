@@ -8,3 +8,10 @@ packer_bin_path: /usr/local/bin
 sources_directory: /opt
 
 build_directory: build
+
+mysql_service: mysqld
+mysql_port: 3306
+mysql_user: test
+mysql_password: test
+mysql_db: test
+mysql_socket: /var/run/mysqld/mysqld.sock

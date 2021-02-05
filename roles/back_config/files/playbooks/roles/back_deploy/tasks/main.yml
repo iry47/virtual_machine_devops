@@ -1,2 +1,6 @@
+- name: Remove old deployed back
+  shell: rm -rf /var/www/back
+
 - name: Copy artifact to nginx sources endpoint
-  shell: cp -r /opt/back/* /var/www/back
+  shell: cp -rp /opt/back /var/www
+
