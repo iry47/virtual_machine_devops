@@ -1,2 +1,2 @@
 - name: Copy artifact to nginx sources endpoint
-  shell: cp /opt/front/dist/front/* /var/www/html/
+  shell: cp -r /opt/back/* /var/www/back
