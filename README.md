@@ -1,5 +1,9 @@
 # devops-62_2020
 
-Run :
+###Dependencies :
 
-ansible-playbook -i hosts.yml playbook.yml
+> pip3 install lxml bs4 ansible
+
+###Run :
+
+> ansible-playbook -i hosts.yml playbook.yml
