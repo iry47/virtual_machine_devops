@@ -1,3 +1,17 @@
+- name: Install pre-required php packages
+  apt:
+    state: latest
+    name:
+      - apt-transport-https
+      - lsb-release
+      - ca-certificates
+
+- name: Get php-7.4 GPG key
+  shell: wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+
+- name: Add php-7.4 sources list
+  shell: echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
+
 - name: Update and upgrade apt packages
   become: true
   apt:
@@ -9,55 +23,68 @@
   apt:
     state: latest
     name:
+      - nodejs
+      - npm
       - curl
-      - php
+      - php7.4
+      - php7.4-mysql
+      - php7.4-intl
+      - php7.4-json
+      - php7.4-curl
+      - php7.4-mbstring
+      - php7.4-gd
+      - php7.4-xml
+      - php7.4-zip
+      - php7.4-fpm
+      - php7.4-readline
       - php-cli
-      - php-fpm
-      - php-json
       - php-common
-      - php-mysql
-      - php-zip
-      - php-gd
-      - php-mbstring
-      - php-curl
-      - php-xml
       - php-pear
       - php-bcmath
       - composer
       - nginx
 
-#- name: Download Google Chrome
-#  shell: wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#- name: Generate SSH key
+#  shell: >
+#    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
 #
-#- name: Install Google Chrome
-#  shell: dpkg -i google-chrome*.deb
+#- name: Copy sources
+#  ansible.builtin.unarchive:
+#    src: backend.zip
+#    dest: "{{ sources_directory }}"
+#
 
-- name: Generate SSH key
-  shell: >
-    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+- name: Create build directory
+  file:
+    path: /var/www/back
+    state: directory
 
-- name: Copy sources
-  ansible.builtin.unarchive:
-    src: backend.zip
-    dest: "{{ sources_directory }}"
+- name: Set nginx owner of build directory
+  shell: chown -R www-data.www-data /var/www/back
+
+- name: Set nginx owner of project directory
+  shell: chown -R gitlab-runner /opt/back
 
 - name: Copy nginx conf file
   copy:
     src=back.conf
-    dest=/etc/nginx/conf.d/back.conf
+    dest=/etc/nginx/sites-available/back
+
+- name: Set back conf to enabled http endpoints
+  shell: ln -s /etc/nginx/sites-available/back /etc/nginx/sites-enabled/  | true
 
 - name: Restart nginx
-  shell: systemctl restart nginx
-
-- name: Copy Gitlab-ci file
-  copy:
-    src=gitlab-ci.yml
-    dest=/opt/back/.gitlab-ci.yml
+  shell: systemctl reload nginx
+#
+#- name: Copy Gitlab-ci file
+#  copy:
+#    src=gitlab-ci.yml
+#    dest=/opt/back/.gitlab-ci.yml
 
 - name: Copy Ansible playbooks
   copy:
     src=playbooks/
     dest=/opt/playbooks
 
-- name: Add gitlab ssh key
-  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts
+#- name: Add gitlab ssh key
+#  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts

@@ -1,5 +1,8 @@
-- name: Install dependencies
-  command: chdir={{ sources_directory }}/front npm install
+- name: Install PHP dependencies
+  command: chdir={{ sources_directory }}/back composer install --optimize-autoloader --no-dev
 
-- name: Build Angular app
-  command: chdir={{ sources_directory }}/front ng build --prod
+- name: Build JS dependencies
+  command: chdir={{ sources_directory }}/back npm install
+
+- name: Package JS prod packages
+  command: chdir={{ sources_directory }}/back npm run prod

@@ -1,23 +1,23 @@
-- name: Virtual machines genesis
-  hosts: localhost
-  connection: local
-
-  roles:
-    - genesis
-
-- name: Data base configuration
-  hosts: db
-  remote_user: root
-
-  roles:
-    - db
-
-- name: Gitlab configuration
-  hosts: gitlab
-  remote_user: root
-
-  roles:
-    - gitlab
+#- name: Virtual machines genesis
+#  hosts: localhost
+#  connection: local
+#
+#  roles:
+#    - genesis
+#
+#- name: Data base configuration
+#  hosts: db
+#  remote_user: root
+#
+#  roles:
+#    - db
+#
+#- name: Gitlab configuration
+#  hosts: gitlab
+#  remote_user: root
+#
+#  roles:
+#    - gitlab
 
 - name: Backend configuration
   hosts: backend
@@ -27,12 +27,12 @@
   roles:
     - back_config
 
-- name: Frontend configuration
-  hosts: frontend
-  remote_user: root
-
-  roles:
-    - front_config
+#- name: Frontend configuration
+#  hosts: frontend
+#  remote_user: root
+#
+#  roles:
+#    - front_config
 
 #- name: Frontent test
 #  hosts: frontend
