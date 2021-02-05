@@ -60,9 +60,12 @@
     state: directory
 
 - name: Set nginx owner of build directory
-  shell: chown -R www-data.www-data /var/www/back
+  shell: chown -R www-data:www-data /var/www/
 
 - name: Set nginx owner of project directory
+  shell: chown -R www-data:www-data /opt/back
+
+- name: Set gitlab-runner owner of project directory
   shell: chown -R gitlab-runner /opt/back
 
 - name: Copy nginx conf file
