@@ -23,6 +23,7 @@
       - php-xml
       - php-pear
       - php-bcmath
+      - phpunit
       - composer
       - nginx
 
@@ -53,6 +54,17 @@
   copy:
     src=gitlab-ci.yml
     dest=/opt/back/.gitlab-ci.yml
+
+- name: Copy env file
+  copy:
+    src=env.conf
+    dest=/opt/back/.env
+
+- name: write env
+  lineinfile:
+    path: "{{sources_directory}}/back/.env"
+    line: "{{item}}"
+  with_items: ["DB_HOST={{hostvars[groups['db'][0]].vm_ip}}", "DB_PORT={{mysql_port}}", "DB_DATABASE={{mysql_db}}", "DB_USERNAME={{mysql_user}}", "DB_PASSWORD={{mysql_password}}"]
 
 - name: Copy Ansible playbooks
   copy:
