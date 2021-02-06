@@ -5,6 +5,13 @@
 #  roles:
 #    - genesis
 #
+#- name: Gitlab configuration
+#  hosts: gitlab
+#  remote_user: root
+#
+#  roles:
+#    - gitlab
+#
 #- name: Data base configuration
 #  hosts: db
 #  remote_user: root
@@ -12,38 +19,17 @@
 #  roles:
 #    - db
 #
-#- name: Gitlab configuration
-#  hosts: gitlab
+#- name: Backend configuration
+#  hosts: backend
 #  remote_user: root
+#  gather_facts: no
 #
 #  roles:
-#    - gitlab
+#    - back_config
 
-- name: Backend configuration
-  hosts: backend
+- name: Frontend configuration
+  hosts: frontend
   remote_user: root
-  gather_facts: no
 
   roles:
-    - back_config
-
-#- name: Frontend configuration
-#  hosts: frontend
-#  remote_user: root
-#
-#  roles:
-#    - front_config
-
-#- name: Frontent test
-#  hosts: frontend
-#  remote_user: root
-#
-#  roles:
-#    - front_test
-#
-#- name: Frontent build
-#  hosts: frontend
-#  remote_user: root
-#
-#  roles:
-#    - front_build
+    - front_config

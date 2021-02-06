@@ -1,6 +1,5 @@
-- name: Remove old deployed back
-  shell: rm -rf /var/www/back
+- name: Copy packages to deploy directory
+  shell: sudo cp -rp /opt/back /var/www
 
-- name: Copy artifact to nginx sources endpoint
-  shell: cp -rp /opt/back /var/www
-
+- name: Set acl to storage deploy directory
+  shell: sudo chown -R www-data /var/www/back/storage

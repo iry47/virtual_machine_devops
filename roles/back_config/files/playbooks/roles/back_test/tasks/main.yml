@@ -1,5 +1,5 @@
 - name: Install dependencies
-  command: chdir={{ sources_directory }}/front npm install
+  command: chdir={{ sources_directory }}/back composer install
 
-- name: Test Angular app
-  command: chdir={{ sources_directory }}/front npm run test
+- name: Test Laravel app
+  command: chdir={{ sources_directory }}/back phpunit

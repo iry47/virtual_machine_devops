@@ -9,6 +9,7 @@
     chdir={{ playbook_dir }}/{{ build_directory }}/vm/ ./packer build debian.json
   when: result is failed
 
-- name: VM DB genesis
+- name: VM genesis
   include_tasks: clone.yml
   with_indexed_items: "{{ groups[outer_item] }}"
+

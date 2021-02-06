@@ -7,8 +7,20 @@
       - gitlab-runner
     state: latest
 
-- name: Set gitlab-runner permission to deploy directory
+- name: Set gitlab-runner owner of project directory
   shell: chown -R gitlab-runner /var/www
+
+- name: Set gitlab-runner owner of project directory
+  shell: chown -R gitlab-runner /opt/back
+
+- name: Add gitlab-runner to root user to run privileged commands
+  lineinfile:
+    path:  /etc/sudoers
+    line: "gitlab-runner ALL=(ALL) NOPASSWD: /usr/bin/chown, /usr/bin/cp"
+    state: present
+
+- name: Add gitlab-runner to root user to run privileged commands
+  shell: usermod -aG sudo gitlab-runner
 
 - name: Configure gitlab runner home directory
   shell: rm /home/gitlab-runner/.bash_logout | true

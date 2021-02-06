@@ -1,49 +1,67 @@
+#- name: Install dependencies
+#  apt:
+#    name:
+#      - curl
+#      - nodejs
+#      - npm
+#      - unzip
+#      - git
+#      - nginx
+#    state: latest
+#
+#- name: Install Angular
+#  shell: npm install -g @angular/cli
+
+- name: Configure apt
+  shell: apt-get -f install -y && dpkg --configure -a
+
+
 - name: Install dependencies
   apt:
     name:
-      - curl
-      - nodejs
-      - npm
-      - unzip
-      - git
-      - nginx
+      - fonts-liberation
+      - libappindicator1
     state: latest
 
-- name: Install Angular
-  shell: npm install -g @angular/cli
+- name: Download Google Chrome
+  shell: wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
-#- name: Download Google Chrome
-#  shell: wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+- name: Install Google Chrome
+  shell: dpkg -i google-chrome*.deb
+
+#- name: Generate SSH key
+#  shell: >
+#    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+
+#- name: Copy sources
+#  ansible.builtin.unarchive:
+#    src: frontend.zip
+#    dest: "{{ sources_directory }}"
 #
-#- name: Install Google Chrome
-#  shell: dpkg -i google-chrome*.deb
-
-- name: Generate SSH key
-  shell: >
-    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
-
-- name: Copy sources
-  ansible.builtin.unarchive:
-    src: frontend.zip
-    dest: "{{ sources_directory }}"
-
-- name: Copy nginx conf file
-  copy:
-    src=front.conf
-    dest=/etc/nginx/conf.d/front.conf
-
-- name: Restart nginx
-  shell: systemctl restart nginx
-
-- name: Copy Gitlab-ci file
-  copy:
-    src=gitlab-ci.yml
-    dest=/opt/front/.gitlab-ci.yml
-
-- name: Copy Ansible playbooks
-  copy:
-    src=playbooks/
-    dest=/opt/playbooks
-
-- name: Add gitlab ssh key
-  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts
+#- name: Copy nginx conf file
+#  copy:
+#    src=front.conf
+#    dest=/etc/nginx/conf.d/front.conf
+#
+#- name: Restart nginx
+#  shell: systemctl restart nginx
+#
+#- name: Copy Gitlab-ci file
+#  copy:
+#    src=gitlab-ci.yml
+#    dest=/opt/front/.gitlab-ci.yml
+#
+#- name: Set env values
+#  lineinfile:
+#    dest: "{{sources_directory}}/front/src/environments/environment.prod.ts"
+#    regexp: "^  api_endpoint:"
+#    line: "  api_endpoint: \"http://{{  hostvars[groups['backend'][0]].vm_ip }}:8080/api\""
+#  ignore_errors: true
+#
+#- name: Copy Ansible playbooks
+#  copy:
+#    src=playbooks/
+#    dest=/opt/playbooks
+#
+#- name: Add gitlab ssh key
+#  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts

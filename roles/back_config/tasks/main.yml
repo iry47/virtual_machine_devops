@@ -1,8 +1,8 @@
 - name: Setup server
   include_tasks: setup.yml
 
-#- name: Configure pipeline
-#  include_tasks: piepline.yml
+- name: Configure pipeline
+  include_tasks: piepline.yml
 
-#- name: Link remote repository
-#  include_tasks: repository.yml
+- name: Link remote repository
+  include_tasks: repository.yml

@@ -1,5 +1,2 @@
-- name: Install dependencies
-  command: chdir={{ sources_directory }}/front npm install
-
 - name: Test Angular app
   command: chdir={{ sources_directory }}/front npm run test

@@ -1,57 +1,56 @@
-#- name: Install pre-required php packages
-#  apt:
-#    state: latest
-#    name:
-#      - apt-transport-https
-#      - lsb-release
-#      - ca-certificates
-#
-#- name: Get php-7.4 GPG key
-#  shell: wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-#
-#- name: Add php-7.4 sources list
-#  shell: echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
-#
-#- name: Update and upgrade apt packages
-#  become: true
-#  apt:
-#    upgrade: yes
-#    update_cache: yes
-#
-#- name: Install dependencies
-#  become: true
-#  apt:
-#    state: latest
-#    name:
-#      - curl
-#      - php7.4
-#      - php7.4-mysql
-#      - php7.4-intl
-#      - php7.4-json
-#      - php7.4-curl
-#      - php7.4-mbstring
-#      - php7.4-gd
-#      - php7.4-xml
-#      - php7.4-zip
-#      - php7.4-fpm
-#      - php7.4-readline
-#      - php-cli
-#      - php-common
-#      - php-pear
-#      - php-bcmath
-#      - phpunit
-#      - composer
-#      - nginx
+- name: Install pre-required php packages
+  apt:
+    state: latest
+    name:
+      - apt-transport-https
+      - lsb-release
+      - ca-certificates
 
-#- name: Generate SSH key
-#  shell: >
-#    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
-#
+- name: Get php-7.4 GPG key
+  shell: wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+
+- name: Add php-7.4 sources list
+  shell: echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install dependencies
+  become: true
+  apt:
+    state: latest
+    name:
+      - curl
+      - php7.4
+      - php7.4-mysql
+      - php7.4-intl
+      - php7.4-json
+      - php7.4-curl
+      - php7.4-mbstring
+      - php7.4-gd
+      - php7.4-xml
+      - php7.4-zip
+      - php7.4-fpm
+      - php7.4-readline
+      - php-cli
+      - php-common
+      - php-pear
+      - php-bcmath
+      - phpunit
+      - composer
+      - nginx
+
+- name: Generate SSH key
+  shell: >
+    ssh-keygen -t rsa -f /root/.ssh/id_rsa -q -P ""
+
 - name: Copy sources
   ansible.builtin.unarchive:
     src: backend.zip
     dest: "{{ sources_directory }}"
-
 
 - name: Create build directory
   file:
@@ -61,18 +60,11 @@
 - name: Set nginx owner of build directory
   shell: chown -R www-data:www-data /var/www
 
-- name: Set gitlab-runner owner of project directory
-  shell: chown -R gitlab-runner /var/www
-
 - name: Set nginx owner of project directory
   shell: chown -R www-data:www-data /opt/back
 
 - name: Set nginx owner of project directory
   shell: chmod 777 /opt/back/storage
-
-- name: Set gitlab-runner owner of project directory
-  shell: chown -R gitlab-runner /opt/back
-
 
 - name: Copy nginx conf file
   copy:
@@ -84,27 +76,27 @@
 
 - name: Restart nginx
   shell: systemctl reload nginx
-#
-#- name: Copy Gitlab-ci file
-#  copy:
-#    src=gitlab-ci.yml
-#    dest=/opt/back/.gitlab-ci.yml
 
-#- name: Copy env file
-#  copy:
-#    src=env.conf
-#    dest=/opt/back/.env
-#
-#- name: write env
-#  lineinfile:
-#    path: "{{sources_directory}}/back/.env"
-#    line: "{{item}}"
-#  with_items: ["DB_HOST={{hostvars[groups['db'][0]].vm_ip}}", "DB_PORT={{mysql_port}}", "DB_DATABASE={{mysql_db}}", "DB_USERNAME={{mysql_user}}", "DB_PASSWORD={{mysql_password}}"]
+- name: Copy Gitlab-ci file
+  copy:
+    src=gitlab-ci.yml
+    dest=/opt/back/.gitlab-ci.yml
+
+- name: Copy env file
+  copy:
+    src=env.conf
+    dest=/opt/back/.env
+
+- name: write env
+  lineinfile:
+    path: "{{sources_directory}}/back/.env"
+    line: "{{item}}"
+  with_items: ["DB_HOST={{hostvars[groups['db'][0]].vm_ip}}", "DB_PORT={{mysql_port}}", "DB_DATABASE={{mysql_db}}", "DB_USERNAME={{mysql_user}}", "DB_PASSWORD={{mysql_password}}"]
 
 - name: Copy Ansible playbooks
   copy:
     src=playbooks/
     dest=/opt/playbooks
 
-#- name: Add gitlab ssh key
-#  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts
+- name: Add gitlab ssh key
+  shell: ssh-keyscan {{ hostvars[groups['gitlab'][0]].vm_ip }} >> ~/.ssh/known_hosts

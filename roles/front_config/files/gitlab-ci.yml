@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
   - deploy
 
 build:
@@ -11,7 +12,14 @@ build:
     paths:
       - /opt/front/dist/front/*
 
+test:
+  stage: test
+  script:
+    - ansible-playbook /opt/playbooks/test.yml
+
 deploy:
   stage: deploy
   script:
     - ansible-playbook /opt/playbooks/deploy_artifact.yml
+  rules:
+    - when: manual
