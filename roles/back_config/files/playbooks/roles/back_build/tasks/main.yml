@@ -1,3 +1,6 @@
+- name: Get environment
+  shell: cp /opt/back/.env {{ sources_directory }}/back
+
 - name: Install PHP dependencies
   command: chdir={{ sources_directory }}/back composer install --optimize-autoloader --no-dev
 

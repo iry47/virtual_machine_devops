@@ -2,21 +2,27 @@ stages:
   - build
   - test
   - deploy
+
 build:
   stage: build
   script:
-    - ansible-playbook /opt/playbooks/build.yml
+    - ansible-playbook /opt/playbooks/build.yml -e sources_directory=$(pwd | sed -e "s/\/back//")
   artifacts:
-    paths:
-      - /opt/back
+    untracked: true
+
 test:
   stage: test
+  dependencies:
+    - build
   script:
-    - ansible-playbook /opt/playbooks/test.yml
+    - ansible-playbook /opt/playbooks/test.yml -e sources_directory=$(pwd | sed -e "s/\/back//")
+
 deploy:
   stage: deploy
+  dependencies:
+    - build
   script:
-    - ansible-playbook /opt/playbooks/deploy_artifact.yml
+    - ansible-playbook /opt/playbooks/deploy_artifact.yml -e sources_directory=$(pwd | sed -e "s/\/back//")
   rules:
     - when: manual
 

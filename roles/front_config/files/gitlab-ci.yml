@@ -6,20 +6,22 @@ stages:
 build:
   stage: build
   script:
-    - ansible-playbook /opt/playbooks/build.yml
-
+    - ansible-playbook /opt/playbooks/build.yml -e sources_directory=$(pwd | sed -e "s/\/front//")
   artifacts:
-    paths:
-      - /opt/front/dist/front/*
+    untracked: true
 
 test:
   stage: test
+  dependencies:
+    - build
   script:
-    - ansible-playbook /opt/playbooks/test.yml
+    - ansible-playbook /opt/playbooks/test.yml -e sources_directory=$(pwd | sed -e "s/\/front//")
 
 deploy:
   stage: deploy
+  dependencies:
+    - build
   script:
-    - ansible-playbook /opt/playbooks/deploy_artifact.yml
+    - ansible-playbook /opt/playbooks/deploy_artifact.yml -e sources_directory=$(pwd | sed -e "s/\/front//")
   rules:
     - when: manual

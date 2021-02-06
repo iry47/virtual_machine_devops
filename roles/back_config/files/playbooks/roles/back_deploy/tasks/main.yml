@@ -1,5 +1,8 @@
+- name: Get environment
+  shell: cp /opt/back/.env {{ sources_directory }}/back
+
 - name: Copy packages to deploy directory
-  shell: sudo cp -rp /opt/back /var/www
+  shell: sudo cp -rp {{ sources_directory }}/back /var/www
 
 - name: Set acl to storage deploy directory
   shell: sudo chown -R www-data /var/www/back/storage
